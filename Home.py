@@ -643,14 +643,9 @@ if predict_button:
                 st.success(f"Model baseline lama berhasil dihapus. Model, histori training, dan metadata parameter baseline yang baru telah berhasil disimpan.")
             else:
                 st.success(f"Model, histori training, dan metadata parameter baseline telah berhasil disimpan.")
-
-    if tune_model:
-        st.markdown("#### 4.4 Model Results")
-        st.write("Hasil model baseline.")
-    else:
-        st.subheader("5. Evaluation")
-        st.markdown("#### 5.1 Model Evaluation")
-        st.write("Hasil evaluasi model.")
+                
+    st.markdown("#### 4.4 Model Results")
+    st.write("Hasil model baseline.")
 
     baseline_tipe = "Baseline (dari Database)" if model_option == "Gunakan model dari database" else "Baseline"
 
