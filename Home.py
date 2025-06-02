@@ -643,11 +643,7 @@ if predict_button:
                 st.success(f"Model baseline lama berhasil dihapus. Model, histori training, dan metadata parameter baseline yang baru telah berhasil disimpan.")
             else:
                 st.success(f"Model, histori training, dan metadata parameter baseline telah berhasil disimpan.")
-        else:
-            return
-    else:
-        return
-                
+
     st.markdown("#### 4.4 Model Results")
     st.write("Hasil model baseline.")
 
