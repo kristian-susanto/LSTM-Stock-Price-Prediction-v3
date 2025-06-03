@@ -570,7 +570,7 @@ if predict_button:
             epochs = epochs
             batch_size = batch_size
         else:
-            st.error("Model baseline tidak ditemukan di folder `models/`.")
+            st.error("Model baseline tidak ditemukan.")
             st.stop()
     elif model_option == "Latih model baru":
         with st.spinner("Melatih model dan melakukan prediksi..."):
