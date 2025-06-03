@@ -226,27 +226,36 @@ def generate_lstm_model_config(
     st.dataframe(df)
 
 def model_architecture_summary(model):
+    if model is None or not model.layers:
+        st.error("Model belum dibangun atau kosong.")
+        return
+
     summary_buffer = io.StringIO()
     model.summary(print_fn=lambda x: summary_buffer.write(x + "\n"))
     model_summary_str = summary_buffer.getvalue()
     st.code(model_summary_str, language="text")
 
     summary_lines = model_summary_str.strip().split("\n")
-    table_start = next(i for i, line in enumerate(summary_lines) if "Layer (type)" in line)
-    table_end = next(i for i, line in enumerate(summary_lines) if "Total params" in line)
+    table_start = next((i for i, line in enumerate(summary_lines) if "Layer (type)" in line), None)
+    table_end = next((i for i, line in enumerate(summary_lines) if "Total params" in line), None)
+
+    if table_start is None or table_end is None:
+        st.warning("Tidak dapat mem-parsing arsitektur model secara otomatis.")
+        return
+
     table_data = summary_lines[table_start + 2 : table_end - 1]
 
     parsed_rows = []
     for row in table_data:
         clean_row = row.replace("│", "").replace("─", "").replace("└", "").replace("┌", "").replace("┐", "").replace("┘", "")
         parts = [part.strip() for part in clean_row.strip().split("  ") if part.strip()]
-        
+
         if len(parts) >= 3:
             layer_type = parts[0]
             output_shape = parts[1]
             param_count = parts[2]
             parsed_rows.append((layer_type, output_shape, param_count))
-    
+
     df_model_summary = pd.DataFrame(parsed_rows, columns=["Layer (type)", "Output Shape", "Param #"])
     st.dataframe(df_model_summary, use_container_width=True)
 
@@ -350,14 +359,19 @@ if predict_button:
     st.dataframe(env_df)
 
     st.subheader("1. Business Understanding")
-    st.markdown("""
-        Dalam dunia investasi dan pasar modal, kemampuan untuk memprediksi harga saham secara akurat 
-        sangat penting bagi pengambilan keputusan yang tepat dan strategis. Oleh karena itu, dibutuhkan 
-        metode yang mampu menangkap pola waktu (time series) secara efektif. Long Short-Term Memory (LSTM) 
-        dirancang untuk mengenali pola dalam data berurutan dan memiliki keunggulan dalam mengatasi masalah 
-        long-term dependencies. Dengan menerapkan LSTM, perusahaan atau investor dapat memperoleh prediksi 
-        harga saham yang mendukung perencanaan dan manajemen risiko investasi.
-    """)
+    st.markdown(
+        """
+        <div style='text-align: justify'>
+            Dalam dunia investasi dan pasar modal, kemampuan untuk memprediksi harga saham secara akurat 
+            sangat penting bagi pengambilan keputusan yang tepat dan strategis. Oleh karena itu, dibutuhkan 
+            metode yang mampu menangkap pola waktu (time series) secara efektif. Long Short-Term Memory (LSTM) 
+            dirancang untuk mengenali pola dalam data berurutan dan memiliki keunggulan dalam mengatasi masalah 
+            long-term dependencies. Dengan menerapkan LSTM, perusahaan atau investor dapat memperoleh prediksi 
+            harga saham yang mendukung perencanaan dan manajemen risiko investasi.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     st.subheader("2. Data Understanding")
     with st.spinner("Mengambil data dari Yahoo Finance..."):
