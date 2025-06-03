@@ -111,7 +111,7 @@ def delete_old_model(freq, ticker, model_type="baseline"):
 
 def find_model_file(freq, ticker, model_type="baseline"):
     model_name = f"{ticker.lower()}_{freq.lower()}_{model_type}.keras"
-    model_path = os.path.join("datas/models", model_name)
+    model_path = os.path.join("datas/models/", model_name)
     if os.path.exists(model_path):
         return model_path
     return None
@@ -125,7 +125,7 @@ def load_info_model(model_path=None, freq=None, info_type="model", ticker=None, 
 
     elif info_type == "history":
         if model_path:
-            history_path = model_path.replace("datas/models", "datas/histories").replace(".keras", "_history.json")
+            history_path = model_path.replace("datas/models/", "datas/histories/").replace(".keras", "_history.json")
             if os.path.exists(history_path):
                 with open(history_path, "r") as f:
                     return json.load(f)
